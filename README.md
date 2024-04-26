@@ -1,4 +1,4 @@
-# Project Management App
+# Project Management Application
 
 The Project Management App is a web-based application designed to simplify project management tasks and facilitate collaboration among team members. With features like project creation, todo management, and export summary as Gist, this app provides a comprehensive solution for managing projects efficiently.
 
