@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded shadow-md">
+        <h2 class="text-2xl mb-4">SignUp</h2>
+        <form id="registerForm" th:action="@{/register}" method="post">
+            <div class="mb-4">
+                <label for="username" class="block text-gray-700 font-bold mb-2">Username:</label>
+                <input type="text" id="username" name="username" class="border rounded px-3 py-2 w-full" required>
+                <span id="usernameError" class="error-message"></span>
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700 font-bold mb-2">Password:</label>
+                <input type="password" id="password" name="password" class="border rounded px-3 py-2 w-full" required>
+                <span id="passwordError" class="error-message"></span>
+            </div>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">SignUp</button>
+        </form>
+    </div>
+    <div id="errorPopup" class="popup">
+        <h3>Must be atleast 6 characters !</h3>
+        <p id="errorMessage"></p>
+        <button onclick="closePopup()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Close</button>
+    </div>
+    <script>
+        function displayPopup(message) {
+            document.getElementById('errorMessage').innerText = message;
+            document.getElementById('errorPopup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('errorPopup').style.display = 'none';
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch('/register', {
+                method: 'POST',
+                body: formData
+            });
+            if (response.status === 200) {
+                window.location.href = '/projects'; // Redirect to projects page
+            } else {
+                // Error
+                const responseData = await response.json();
+                displayPopup(responseData.errors);
+            }
+        });
+    </script>
+</body>
+</html>

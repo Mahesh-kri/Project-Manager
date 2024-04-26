@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <script>
+        function submitForm() {
+            // Get the new title from the editable span
+            var newTitle = document.querySelector('.editable').innerText.trim();
+            // Set the value of the hidden input field
+            document.getElementById('newTitleInput').value = newTitle;
+            // Submit the form
+            document.getElementById('editForm').submit();
+        }
+        
+    </script>
+    
+    
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-gray-800">
+        <div class="container mx-auto px-4 py-2 flex items-center justify-between">
+            <a class="text-white text-xl font-bold hover:text-gray-300" href="#">Project Manager</a>
+            <div class="flex items-center">
+                <a class="btn btn-outline-light mr-2 hover:bg-gray-700 hover:text-white" href="/projects/new">New Project</a>
+                <button onclick="window.location.href='/projects'" class="btn btn-outline-light hover:bg-gray-700 hover:text-white">Home</button>
+                <form id="logoutForm" action="/logout" method="post" style="display: none;">
+                    <button type="submit" class="btn btn-outline-light hover:bg-gray-700 hover:text-white">Logout</button>
+                </form>
+                
+                <button onclick="document.getElementById('logoutForm').submit()" class="btn btn-outline-light hover:bg-gray-700 hover:text-white">Logout</button>
+                
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto py-8 px-4">
+        
+        <div class="flex items-center justify-between mb-8">
+            <form id="editForm" th:action="@{/projects/{id}/update-title(id=${project.id})}" method="post">
+                <!-- Hidden input field to hold the new title value -->
+                <input type="hidden" id="newTitleInput" name="newTitle" value="">
+                <h1 class="text-3xl font-bold">
+                    <span class="editable" contenteditable="true" th:text="${project.title}" title="Click to edit" onblur="submitForm()"></span>
+                </h1>
+            </form>
+            
+    
+            <div class="flex gap-4">
+                <form th:action="@{/projects/{id}/export-summary(id=${project.id})}" method="get" class="inline-form">
+                    <button type="submit" class="btn btn-primary">Download</button>
+                </form>
+                <form th:action="@{/projects/{id}/delete(id=${project.id})}" method="post" class="inline-form">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Add Todo Form -->
+        <div class="mb-8">
+            <form th:action="@{/projects/{id}/todo(id=${project.id})}" method="post" class="mb-3">
+                <div class="mb-4">
+                    <label for="description" class="block text-sm font-medium text-gray-700">New Todo:</label>
+                    <input type="text" id="description" name="description" class="form-control w-full rounded-md" required>
+                </div>
+                <button type="submit" class="btn btn-success">Add Todo</button>
+            </form>
+        </div>
+
+        <!-- Pending Tasks -->
+        <div class="mb-8">
+            <h2 class="text-xl font-bold mb-4">Pending Tasks</h2>
+            <ul class="list-group">
+                <li th:each="todo : ${project.pendingTodos}" class="task flex items-center justify-between bg-white shadow-md rounded-lg p-4 mb-4">
+                    <div>
+                        <form id="editForm" th:action="@{/projects/{projectId}/todo/{todoId}/update-todotitle(projectId=${project.id},todoId=${todo.id})}" method="post">
+                            <!-- Hidden input field to hold the new title value -->
+                            <input type="hidden" id="newTitleInput" name="newTitle" value="">
+                            <h1 class="text-lg font-semibold">
+                                <span class="editable"  th:text="${todo.description}"  onblur="submitForm()"></span>
+                            </h1>
+                        </form>
+                        
+                        
+                        <div class="labels flex mt-2">
+                            <span class="label bg-blue-500 text-white py-1 px-2 rounded-lg mr-2">Created: <span th:text="${#dates.format(todo.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+                            <span class="label bg-blue-500 text-white py-1 px-2 rounded-lg">Updated: <span th:text="${#dates.format(todo.updatedDate, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+                        </div>
+                    </div>
+                    <div class="btn-container">
+                        <form th:action="@{/projects/{projectId}/todo/{todoId}/markCompleted(projectId=${project.id},todoId=${todo.id})}" method="post" class="inline-form">
+                            <button type="submit" class="btn btn-success">Complete</button>
+                        </form>
+                        <form th:action="@{/projects/{id}/todo/{todoId}/delete(id=${project.id},todoId=${todo.id})}" method="post" class="inline-form">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- Completed Tasks -->
+        <div>
+            <h2 class="text-xl font-bold mb-4">Completed Tasks</h2>
+            <ul class="list-group">
+                <li th:each="todo : ${project.completedTodos}" class="task flex items-center justify-between bg-white shadow-md rounded-lg p-4 mb-4">
+                    <div>
+                        <form id="editForm" th:action="@{/projects/{projectId}/todo/{todoId}/update-todotitle(projectId=${project.id},todoId=${todo.id})}" method="post">
+                            <!-- Hidden input field to hold the new title value -->
+                            <input type="hidden" id="newTitleInput" name="newTitle" value="">
+                            <h1 class="text-lg font-semibold">
+                                <span class="editable" contenteditable="true" th:text="${todo.description}" title="Click to edit" onblur="submitForm()"></span>
+                            </h1>
+                        </form>
+                         <div class="labels flex mt-2">
+                            <span class="label bg-blue-500 text-white py-1 px-2 rounded-lg mr-2">Created: <span th:text="${#dates.format(todo.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+                            <span class="label bg-blue-500 text-white py-1 px-2 rounded-lg">Updated: <span th:text="${#dates.format(todo.updatedDate, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+                        </div>
+                    </div>
+                    <div class="btn-container">
+                        <form th:action="@{/projects/{projectId}/todo/{todoId}/delete(projectId=${project.id},todoId=${todo.id})}" method="post" class="inline-form">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+    </div>
+
+    
+
+   </body>
+</html>

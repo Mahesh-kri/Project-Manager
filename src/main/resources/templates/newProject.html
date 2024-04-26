@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>New Project</title>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-gray-800">
+        <div class="container mx-auto px-4 py-2 flex items-center justify-between">
+            <a class="text-white text-xl font-bold hover:text-gray-300" href="#">Project Manager</a>
+            <div class="flex items-center">
+                <a class="btn btn-outline-light mr-2 hover:bg-gray-700 hover:text-white" href="/projects/new">New Project</a>
+                <button onclick="window.location.href='/projects'" class="btn btn-outline-light hover:bg-gray-700 hover:text-white">Home</button>
+                <form id="logoutForm" action="/logout" method="post" style="display: none;">
+                    <button type="submit" class="btn btn-outline-light hover:bg-gray-700 hover:text-white">Logout</button>
+                </form>
+                
+                <button onclick="document.getElementById('logoutForm').submit()" class="btn btn-outline-light hover:bg-gray-700 hover:text-white">Logout</button>
+                
+            </div>
+        </div>
+    </nav>
+    <div class="container mx-auto mt-5">
+        <div class="flex justify-center">
+            <div class="w-full sm:w-1/2">
+                <div class="bg-white shadow-md rounded-lg p-8">
+                    <h1 class="text-center mb-4 text-xl font-bold">Create New Project</h1>
+                    <form th:action="@{/projects/new}" method="post">
+                        <div class="mb-4">
+                            <label for="title" class="block text-gray-700 font-bold mb-2">Title:</label>
+                            <input type="text" id="title" name="title" class="form-control w-full rounded-md" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="bg-gray-800">
+        <div class="container mx-auto px-4 py-2 flex items-center justify-between">
+            <a class="text-white text-xl font-bold hover:text-gray-300" href="#">Project Manager</a>
+            <div class="flex items-center">
+                <a class="btn btn-outline-light mr-2 hover:bg-gray-700 hover:text-white" href="/projects/new">New Project</a>
+                <button onclick="window.location.href='/projects'" class="btn btn-outline-light hover:bg-gray-700 hover:text-white">Home</button>
+                <form id="logoutForm" action="/logout" method="post" style="display: none;">
+                    <button type="submit" class="btn btn-outline-light hover:bg-gray-700 hover:text-white">Logout</button>
+                </form>
+                
+                <button onclick="document.getElementById('logoutForm').submit()" class="btn btn-outline-light hover:bg-gray-700 hover:text-white">Logout</button>
+                
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Project list -->
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8">Projects</h1>
+        <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Iterate over projects -->
+            <li th:each="project : ${projects}" class="bg-white shadow-md rounded-lg p-4">
+                <!-- Project link -->
+                <a th:href="@{'/projects/' + ${project.id}}" class="block text-xl font-semibold hover:text-blue-600"><span th:text="${project.title}"></span></a>
+            </li>
+        </ul>
+    </div>
+
+</body>
+</html>
